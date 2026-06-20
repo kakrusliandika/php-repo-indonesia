@@ -1,74 +1,75 @@
 # PHP Repo
 
-Katalog ekosistem PHP modern yang mencakup framework, library, tooling, CMS, testing, keamanan, deployment, observability, AI/ML, dan package legacy yang perlu ditinjau sebelum digunakan.
+README ini berisi daftar dependency dan tool PHP yang masih masuk akal untuk dipakai hari ini.
 
-> Terakhir ditinjau: 20 Juni 2026  
-> Target utama: PHP 8.4/8.5, Composer 2.x, package yang masih aktif, pilihan dependency yang aman, dan opsi praktis untuk proyek baru.  
-> Catatan: versi patch cepat berubah. Untuk melihat patch terbaru, jalankan `composer outdated`, `composer show vendor/package --all`, dan cek halaman rilis resmi.
+Tujuannya sederhana: supaya kita tidak hanya punya daftar link, tapi juga tahu **package itu untuk apa**, **kapan dipakai**, dan **kapan sebaiknya dihindari**.
+
+> Terakhir dirapikan: 20 Juni 2026  
+> Target proyek baru: PHP 8.4 atau PHP 8.5, Composer 2.x, dependency aktif, dan setup yang mudah dirawat.
+
+## Cara membaca README ini
+
+- **Jangan install semua package.** Pilih yang sesuai kebutuhan.
+- Kalau memakai Laravel, dahulukan package resmi Laravel dan package yang memang cocok untuk Laravel.
+- Kalau memakai Symfony, dahulukan komponen Symfony.
+- Untuk proyek kecil, jangan terlalu banyak dependency. Semakin sedikit dependency, semakin mudah dirawat.
+- Untuk proyek produksi, minimal wajib ada testing, audit dependency, logging, dan aturan style kode.
 
 ## Legenda status
 
 | Status | Arti |
-|---|---|
-| Direkomendasikan | Aman dan praktis untuk proyek baru. |
-| Stabil | Masih berguna, tetapi pilih sesuai kebutuhan proyek. |
-| Lanjutan | Cocok untuk kebutuhan performa atau arsitektur khusus. |
-| Khusus | Bagus untuk use case tertentu, tetapi tidak selalu diperlukan. |
-| Legacy/perlu ditinjau | Berguna untuk proyek lama atau pembelajaran, tetapi jangan otomatis dipakai untuk proyek baru. |
-| Hindari untuk proyek baru | Hindari untuk proyek baru; gunakan pengganti modern. |
+| --- | --- |
+| Sangat disarankan | Pakai untuk proyek baru kalau kebutuhannya cocok. |
+| Aman dipakai | Masih aktif dan masuk akal, tapi tidak selalu wajib. |
+| Pakai kalau butuh | Bagus, tapi hanya untuk kasus tertentu. |
+| Untuk proyek lama | Boleh dipertahankan kalau sudah ada, tapi jangan jadi pilihan awal. |
+| Hindari untuk proyek baru | Ada pengganti yang lebih sehat, lebih aktif, atau lebih aman. |
 
-## Rekomendasi cepat
+## Pilihan cepat
 
-| Kebutuhan | Pilihan utama | Alternatif | Catatan |
-| --- | --- | --- | --- |
-| Runtime PHP baru | PHP 8.5 | PHP 8.4 / PHP 8.3 | Gunakan PHP 8.5 untuk proyek baru jika dependensi sudah siap; PHP 8.4 tetap aman sebagai target modern. |
-| Aplikasi web full-stack | Laravel 13 | Symfony 7.4 LTS / Symfony 8.x | Laravel paling cepat untuk pengembangan produk; Symfony unggul untuk arsitektur enterprise. |
-| Backend API | Laravel 13 + Sanctum/Passport | Symfony + API Platform, Slim 4, Mezzio | Pilih berdasarkan kompleksitas domain, kemampuan tim, dan pola deployment. |
-| Microservice | Slim 4 | Mezzio, Spiral, Hyperf | Cocok untuk webhook, API internal, gateway, dan layanan kecil. |
-| CMS | WordPress | Drupal, Joomla, Grav, Statamic, October CMS | WordPress paling luas penggunaannya; Drupal/Joomla cocok untuk konten terstruktur dan portal besar. |
-| E-commerce | WooCommerce | Magento/Adobe Commerce, Sylius, PrestaShop, Shopware | WooCommerce cepat untuk bisnis kecil; Sylius/Magento/Shopware lebih kuat untuk commerce kompleks. |
-| Testing | PHPUnit | Pest, Codeception, Behat | PHPUnit tetap standar; Pest lebih ringkas dan ekspresif. |
-| Analisis statis | PHPStan | Psalm, Phan | Wajib untuk codebase PHP serius dan jangka panjang. |
-| Gaya kode | Laravel Pint | PHP-CS-Fixer, PHP_CodeSniffer, Easy Coding Standard | Jalankan pemeriksaan gaya kode di CI. |
-| Audit keamanan | composer audit | Roave Security Advisories | Minimal wajib sebelum deployment. |
-| Async / realtime | Laravel Octane | RoadRunner, Swoole/OpenSwoole, ReactPHP, AMPHP, Workerman | Gunakan hanya saat perlu worker jangka panjang, concurrency tinggi, atau realtime. |
-| AI / LLM | Laravel AI SDK | OpenAI PHP client, LLPhant, PHP-ML, Rubix ML | Kategori ini cepat berubah; kunci versi dan cek changelog sebelum produksi. |
+| Kebutuhan | Pilihan yang masuk akal | Alasan sederhana |
+| --- | --- | --- |
+| Aplikasi bisnis cepat | Laravel 13 | Paling enak untuk CRUD, dashboard, login, queue, API, dan deployment cepat. |
+| Aplikasi enterprise | Symfony 7.4 LTS / 8.x | Bagus kalau struktur proyek besar dan butuh komponen yang rapi. |
+| API kecil / webhook | Slim 4 | Ringan, tidak banyak aturan, cocok untuk service kecil. |
+| CMS umum | WordPress | Pilihan paling mudah untuk konten, blog, landing page, dan website bisnis. |
+| CMS konten kompleks | Drupal / TYPO3 / Craft CMS | Lebih cocok kalau struktur konten banyak dan butuh workflow editorial. |
+| E-commerce kecil-menengah | WooCommerce | Cepat dibuat dan ekosistem pluginnya besar. |
+| E-commerce custom | Sylius / Shopware / Magento | Lebih serius, lebih berat, tapi lebih fleksibel untuk kebutuhan besar. |
+| Testing | PHPUnit + Pest | PHPUnit standar, Pest lebih nyaman dibaca. |
+| Kualitas kode | PHPStan + Rector + Pint/PHP-CS-Fixer | Ini kombinasi yang paling terasa manfaatnya dalam jangka panjang. |
+| Audit keamanan | composer audit + Roave Security Advisories | Minimal wajib sebelum proyek naik produksi. |
 
-## Versi populer vs versi terbaru yang cocok
+## Versi dasar yang disarankan
 
-| Teknologi | Line modern/terbaru | Constraint disarankan | Line populer/stabil | Catatan |
+| Teknologi | Terbaru yang cocok | Aman/stabil | Masih sering ditemui | Catatan |
 | --- | --- | --- | --- | --- |
-| PHP | 8.5 | 8.5.x | 8.4.x / 8.3.x | Target runtime yang disarankan untuk proyek baru. |
-| Composer | 2.x | 2.9.x+ | 2.8.x | Dependency manager wajib untuk PHP modern. |
-| Laravel | 13.x | ^13.0 | ^12.0 | Laravel 13 membutuhkan PHP 8.3+. |
-| Symfony | 8.x / 7.4 LTS | ^8.0 atau ^7.4 | 7.4 LTS | Gunakan 7.4 untuk stabilitas LTS; gunakan 8.x untuk fitur terbaru. |
-| WordPress | 7.x / 6.x | Rilis stabil terbaru | 6.x | Gunakan rilis aman terbaru dari WordPress.org. |
-| Drupal | 11.x | ^11 | ^10 | Pilihan kuat untuk pemodelan konten enterprise. |
-| Joomla | 6.x / 5.x | Rilis stabil terbaru | 5.x | Joomla 6 adalah line modern; 5.x tetap relevan saat migrasi. |
-| PHPUnit | 12.x / 13.x | ^12.0 atau ^13.0 | ^11.5 | Pilih sesuai kompatibilitas PHP dan framework. |
-| Pest | 4.x | ^4.0 | ^3.0 | Lapisan testing modern yang ekspresif. |
-| PHPStan | 2.x | ^2.0 | ^1.12 | Pilihan utama untuk analisis statis. |
-| Rector | 2.x | ^2.0 | ^1.0 | Upgrade dan refactor otomatis. |
-| Guzzle | 7.x | ^7.0 | 7.x | HTTP client PHP yang paling umum. |
-| Monolog | 3.x | ^3.0 | ^2.0 | Library logging standar. |
-| Twig | 3.x | ^3.0 | 3.x | Template engine modern. |
+| PHP | 8.5 | 8.4 | 8.3 | Untuk proyek baru, mulai dari 8.4 atau 8.5. Jangan mulai proyek baru dengan PHP 7.x. |
+| Composer | 2.10.x | 2.9.x | 2.x | Selalu gunakan Composer 2.x. Ini pusat instalasi dependency PHP. |
+| Laravel | 13.x | 12.x | 11.x | Untuk proyek baru, pilih 13.x kalau server sudah PHP 8.3+. |
+| Symfony | 8.1 / 8.0 | 7.4 LTS | 6.4 LTS | Pilih 7.4 LTS kalau ingin support panjang; pilih 8.x kalau ingin fitur terbaru. |
+| PHPUnit | 12.x / 13.x | 11.x | 10.x | Sesuaikan dengan versi PHP dan framework. |
+| Pest | 4.x | 3.x | 2.x | Bagus untuk test yang lebih mudah dibaca. |
+| PHPStan | 2.x | 1.x | - | Pakai dari awal proyek agar bug cepat kelihatan. |
+| Rector | 2.x | 1.x | - | Membantu upgrade kode tanpa terlalu banyak kerja manual. |
 
-## Preset stack yang direkomendasikan
+## Stack yang paling masuk akal
 
-### 1. Laravel modern full-stack / API
+### 1. Laravel untuk aplikasi bisnis
+
+Pakai ini kalau ingin membuat dashboard, sistem admin, REST API, SaaS kecil, atau aplikasi internal.
 
 ```bash
 composer create-project laravel/laravel app
 cd app
 composer require laravel/sanctum spatie/laravel-permission
 composer require --dev pestphp/pest phpstan/phpstan laravel/pint rector/rector
-php artisan install:api
 composer audit
 ```
 
-Cocok untuk SaaS, dashboard, REST API, queue worker, integrasi AI, dan pengembangan produk bisnis yang cepat.
+### 2. Symfony untuk sistem besar
 
-### 2. Symfony enterprise / API besar
+Pakai ini kalau proyeknya lebih formal, modular, dan butuh struktur enterprise.
 
 ```bash
 composer create-project symfony/skeleton app
@@ -78,9 +79,9 @@ composer require --dev phpunit/phpunit phpstan/phpstan friendsofphp/php-cs-fixer
 composer audit
 ```
 
-Cocok untuk domain kompleks, arsitektur modular, sistem enterprise, aplikasi event-driven, dan API Platform.
+### 3. Slim untuk API kecil
 
-### 3. Micro API ringan
+Pakai ini kalau hanya butuh API kecil, webhook, atau service ringan.
 
 ```bash
 mkdir app && cd app
@@ -90,244 +91,287 @@ composer require --dev phpunit/phpunit phpstan/phpstan friendsofphp/php-cs-fixer
 composer audit
 ```
 
-Cocok untuk webhook, service kecil, gateway internal, worker HTTP ringan, dan prototype cepat.
 
-### 4. Library PHP reusable
+## Dependency inti
 
-```bash
-composer init
-mkdir -p src tests
-composer require psr/log
-composer require --dev phpunit/phpunit phpstan/phpstan friendsofphp/php-cs-fixer rector/rector
-composer dump-autoload
-```
+Bagian ini adalah pondasi. Hampir semua proyek PHP modern akan menyentuh salah satu dari dependency ini.
 
-Gunakan PSR-4, semantic versioning, testing, analisis statis, dan CI sejak awal.
+| Dependency | Install | Gunanya | Pakai kalau | Catatan | Status |
+| --- | --- | --- | --- | --- | --- |
+| PHP | - | Runtime utama. | Semua proyek PHP. | Pilih 8.4/8.5 untuk proyek baru. | Sangat disarankan |
+| Composer | - | Mengelola dependency. | Install package, autoload class, jalankan script. | Ini wajib. Tanpa Composer, proyek PHP modern akan susah dirawat. | Sangat disarankan |
+| Packagist | - | Tempat package Composer berada. | Mencari package dan mengecek versi. | Cek juga status abandoned di halaman package. | Sangat disarankan |
+| vlucas/phpdotenv | `composer require vlucas/phpdotenv` | Membaca file `.env`. | Proyek non-Laravel yang butuh konfigurasi dari environment. | Laravel dan Symfony biasanya sudah punya cara sendiri. | Aman dipakai |
+| monolog/monolog | `composer require monolog/monolog` | Logging aplikasi. | Butuh log error, aktivitas, atau event sistem. | Banyak framework sudah memakai Monolog di belakang layar. | Sangat disarankan |
+| psr/log | `composer require psr/log` | Interface standar untuk logger. | Membuat library yang tidak mau terikat ke Monolog. | Bagus untuk package reusable. | Sangat disarankan |
+| symfony/console | `composer require symfony/console` | Membuat command CLI. | Butuh command seperti `php app migrate` atau `php app report`. | Sangat matang dan banyak dipakai framework. | Sangat disarankan |
+
+
 
 ## Framework web dan API
 
-| Nama | Package/Repo | Line versi | Install | Status | Cocok untuk |
+Framework dipilih berdasarkan ukuran proyek dan gaya kerja tim. Jangan pilih framework hanya karena populer.
+
+| Dependency | Install | Gunanya | Pakai kalau | Catatan | Status |
 | --- | --- | --- | --- | --- | --- |
-| Laravel | laravel/laravel | 13.x | `composer create-project laravel/laravel app` | Direkomendasikan | Aplikasi full-stack, SaaS, dashboard, API, queue, dan produk berbasis AI. |
-| Symfony | symfony/skeleton / symfony/symfony | 8.x / 7.4 LTS | `composer create-project symfony/skeleton app` | Direkomendasikan | Sistem enterprise, aplikasi modular, API, dan komponen reusable. |
-| CodeIgniter 4 | codeigniter4/appstarter | 4.x | `composer create-project codeigniter4/appstarter app` | Stabil | Aplikasi kecil dan tim yang migrasi dari CodeIgniter lama. |
-| CakePHP | cakephp/app | 5.x | `composer create-project cakephp/app app` | Stabil | Aplikasi bisnis CRUD dengan konvensi kuat. |
-| Slim | slim/slim | 4.x | `composer require slim/slim slim/psr7` | Direkomendasikan | Micro API, webhook, dan aplikasi berbasis middleware. |
-| Mezzio | mezzio/mezzio-skeleton | 3.x | `composer create-project mezzio/mezzio-skeleton app` | Stabil | Aplikasi PSR middleware dan API enterprise. |
-| Laminas MVC | laminas/laminas-mvc-skeleton | 3.x | `composer create-project laminas/laminas-mvc-skeleton app` | Stabil | Aplikasi enterprise bergaya Zend yang dimodernisasi. |
-| Spiral | spiral/app | 3.x | `composer create-project spiral/app app` | Lanjutan | RoadRunner, worker jangka panjang, dan layanan performa tinggi. |
-| Hyperf | hyperf/hyperf-skeleton | 3.x | `composer create-project hyperf/hyperf-skeleton app` | Lanjutan | Layanan concurrency tinggi berbasis coroutine/Swoole. |
-| Phalcon | phalcon/cphalcon | 5.x | Extension + Composer packages | Khusus | Aplikasi performa tinggi yang siap bergantung pada extension C. |
-| Yii | yiisoft/yii2 / Yii packages | 2.x stabil / ekosistem 3.x | `composer create-project yiisoft/yii2-app-basic app` | Perlu ditinjau | Yii 2 matang; tinjau kesiapan ekosistem Yii 3 sebelum mulai proyek baru. |
-| Fat-Free Framework | bcosca/fatfree | 3.x | `composer require bcosca/fatfree-core` | Ringan | Aplikasi PHP kecil dan sederhana. |
-| Flight | flightphp/core | 3.x | `composer require flightphp/core` | Ringan | API kecil dan micro app. |
-| Nette | nette/application | 3.x | `composer require nette/application` | Stabil | Ekosistem framework matang, populer di sebagian komunitas Eropa. |
+| laravel/laravel | `composer create-project laravel/laravel app` | Kerangka aplikasi lengkap. | Dashboard, API, SaaS, toko kecil, sistem admin. | Pilihan paling praktis untuk banyak proyek PHP. | Sangat disarankan |
+| symfony/skeleton | `composer create-project symfony/skeleton app` | Kerangka aplikasi modular. | Sistem enterprise, API besar, domain kompleks. | Lebih terasa manfaatnya kalau struktur proyek memang besar. | Sangat disarankan |
+| slim/slim | `composer require slim/slim slim/psr7` | Micro framework. | Webhook, API kecil, service internal. | Tidak membawa banyak fitur bawaan, jadi kita susun sendiri. | Sangat disarankan |
+| codeigniter4/appstarter | `composer create-project codeigniter4/appstarter app` | Framework ringan. | Tim kecil, aplikasi sederhana, migrasi dari CI lama. | Gunakan CodeIgniter 4, bukan CodeIgniter 3 untuk proyek baru. | Aman dipakai |
+| cakephp/app | `composer create-project cakephp/app app` | Framework convention-over-configuration. | CRUD bisnis yang ingin rapi tanpa terlalu banyak konfigurasi. | Bagus kalau tim cocok dengan gaya convention. | Aman dipakai |
+| mezzio/mezzio-skeleton | `composer create-project mezzio/mezzio-skeleton app` | Framework middleware PSR. | API enterprise yang ingin arsitektur middleware. | Lebih teknis daripada Laravel/Symfony. | Pakai kalau butuh |
+| spiral/app | `composer create-project spiral/app app` | Framework untuk aplikasi long-running. | Service performa tinggi dengan RoadRunner. | Butuh pemahaman worker yang lebih matang. | Pakai kalau butuh |
+| hyperf/hyperf-skeleton | `composer create-project hyperf/hyperf-skeleton app` | Framework coroutine berbasis Swoole. | Backend concurrency tinggi. | Tidak perlu untuk aplikasi CRUD biasa. | Pakai kalau butuh |
+| phalcon/cphalcon | Install extension + package | Framework berbasis extension C. | Aplikasi yang mengejar performa dan siap instal extension. | Setup lebih rumit daripada framework biasa. | Pakai kalau butuh |
 
-## CMS, blog, wiki, analytics, dan e-commerce
 
-| Nama | Repo/Package | Line versi | Use case | Status |
-| --- | --- | --- | --- | --- |
-| WordPress | wordpress/wordpress-develop | Rilis stabil terbaru | CMS umum, blog, situs marketing | Direkomendasikan |
-| WooCommerce | woocommerce/woocommerce | 10.x | E-commerce WordPress | Direkomendasikan untuk toko kecil dan menengah |
-| Drupal | drupal/core-recommended | 11.x | CMS enterprise dan konten terstruktur | Direkomendasikan untuk konten kompleks |
-| Joomla | joomla/joomla-cms | 6.x / 5.x | CMS serbaguna | Stabil |
-| Grav | getgrav/grav | 1.7+ | CMS flat-file | Direkomendasikan untuk situs ringan |
-| October CMS | octobercms/october | 3.x / 4.x | CMS berbasis Laravel | Stabil |
-| Statamic | statamic/cms | 5.x | CMS Laravel dengan opsi flat-file/database | Direkomendasikan |
-| Craft CMS | craftcms/cms | 5.x | CMS fokus konten yang ramah developer | Pilihan kuat |
-| TYPO3 | typo3/cms | 13 LTS | CMS enterprise | Pilihan kuat |
-| Magento / Adobe Commerce | magento/magento2 | 2.4.x | E-commerce enterprise | Berat tetapi kuat |
-| Sylius | sylius/sylius | 2.x | Composable/headless commerce | Direkomendasikan untuk custom commerce |
-| PrestaShop | prestashop/prestashop | 9.x / 8.x | E-commerce open-source | Stabil |
-| Shopware | shopware/shopware | 6.x | Platform commerce modern | Kuat di ekosistem Symfony |
-| OpenCart | opencart/opencart | 4.x | Toko online sederhana | Stabil |
-| Matomo | matomo-org/matomo | 5.x | Analytics self-hosted | Direkomendasikan |
-| Nextcloud | nextcloud/server | 31+ / 32+ | Cloud collaboration self-hosted | Direkomendasikan |
-| BookStack | BookStackApp/BookStack | 25.x+ | Platform dokumentasi/wiki | Direkomendasikan |
-| DokuWiki | splitbrain/dokuwiki | Stabil | Wiki tanpa database | Stabil |
-| MediaWiki | wikimedia/mediawiki | 1.43+ / 1.44+ | Sistem wiki besar | Stabil |
-| Mautic | mautic/mautic | 5.x / 6.x | Marketing automation | Khusus |
 
-## HTTP, API, autentikasi, integrasi, dan pembayaran
+## Package penting untuk Laravel
 
-| Nama | Package | Line versi | Install | Use case |
-| --- | --- | --- | --- | --- |
-| Guzzle | guzzlehttp/guzzle | 7.x | `composer require guzzlehttp/guzzle` | HTTP client populer. |
-| Symfony HttpClient | symfony/http-client | 7.4 / 8.x | `composer require symfony/http-client` | HTTP client modern dan efisien. |
-| Nyholm PSR-7 | nyholm/psr7 | 1.x | `composer require nyholm/psr7` | Implementasi PSR-7 yang ringan. |
-| API Platform | api-platform/core | 4.x | `composer require api` | Platform REST/GraphQL API untuk Symfony dan Laravel. |
-| webonyx/graphql-php | webonyx/graphql-php | 15.x | `composer require webonyx/graphql-php` | Library server GraphQL. |
-| swagger-php | zircote/swagger-php | 5.x | `composer require zircote/swagger-php` | Generator OpenAPI berbasis annotation/attribute. |
-| NelmioApiDocBundle | nelmio/api-doc-bundle | 5.x | `composer require nelmio/api-doc-bundle` | Dokumentasi API untuk Symfony. |
-| Laravel Sanctum | laravel/sanctum | 4.x | `composer require laravel/sanctum` | Autentikasi token ringan untuk Laravel. |
-| Laravel Passport | laravel/passport | 13.x | `composer require laravel/passport` | Server OAuth2 untuk Laravel. |
-| league/oauth2-server | league/oauth2-server | 9.x | `composer require league/oauth2-server` | Server OAuth2 framework-agnostic. |
-| lcobucci/jwt | lcobucci/jwt | 5.x | `composer require lcobucci/jwt` | Library JWT yang strict dan typed. |
-| firebase/php-jwt | firebase/php-jwt | 6.x | `composer require firebase/php-jwt` | Library JWT sederhana. |
-| stripe-php | stripe/stripe-php | 16.x+ | `composer require stripe/stripe-php` | Integrasi pembayaran Stripe. |
-| twilio-php | twilio/sdk | 8.x | `composer require twilio/sdk` | Integrasi SMS, voice, dan WhatsApp melalui Twilio. |
-| AWS SDK PHP | aws/aws-sdk-php | 3.x | `composer require aws/aws-sdk-php` | Integrasi AWS. |
-| Google API Client | google/apiclient | 2.x | `composer require google/apiclient` | Integrasi Google API. |
-| GitHub API PHP | knplabs/github-api | 3.x | `composer require knplabs/github-api` | Client GitHub REST API. |
+Package berikut paling sering berguna di proyek Laravel. Pilih sesuai kebutuhan, jangan dipasang semua dari awal.
 
-## Database, ORM, cache, search, dan model data
+| Dependency | Install | Gunanya | Pakai kalau | Catatan | Status |
+| --- | --- | --- | --- | --- | --- |
+| laravel/sanctum | `composer require laravel/sanctum` | Token API dan SPA auth ringan. | API internal, SPA, mobile app sederhana. | Mulai dari Sanctum sebelum Passport kalau OAuth2 tidak wajib. | Sangat disarankan |
+| laravel/passport | `composer require laravel/passport` | OAuth2 server. | Butuh OAuth2 resmi, client credential, atau integrasi pihak ketiga. | Lebih berat dari Sanctum. | Pakai kalau butuh |
+| laravel/pint | `composer require --dev laravel/pint` | Formatter kode Laravel. | Semua proyek Laravel. | Jalankan sebelum commit agar style konsisten. | Sangat disarankan |
+| laravel/octane | `composer require laravel/octane` | Menjalankan Laravel lebih cepat dengan worker. | Traffic tinggi atau response time penting. | Perlu hati-hati dengan state karena prosesnya long-running. | Pakai kalau butuh |
+| laravel/horizon | `composer require laravel/horizon` | Dashboard queue Redis. | Proyek Laravel yang banyak memakai queue. | Sangat membantu memantau job gagal dan beban queue. | Aman dipakai |
+| laravel/telescope | `composer require laravel/telescope --dev` | Debug panel untuk request, query, job, log. | Development dan staging. | Jangan sembarang aktifkan di produksi. | Aman dipakai |
+| laravel/dusk | `composer require --dev laravel/dusk` | Browser testing. | Butuh test alur UI seperti login atau checkout. | Lebih lambat dari unit test, jadi pakai untuk alur penting saja. | Pakai kalau butuh |
+| laravel/socialite | `composer require laravel/socialite` | Login lewat Google/GitHub/dll. | Butuh OAuth login sosial. | Tetap validasi email dan mapping user dengan hati-hati. | Aman dipakai |
+| laravel/scout | `composer require laravel/scout` | Search abstraction. | Butuh pencarian dengan Meilisearch/Algolia/database. | Jangan pakai kalau pencarian masih sederhana. | Pakai kalau butuh |
+| laravel/reverb | `composer require laravel/reverb` | WebSocket realtime bawaan Laravel. | Chat, notifikasi realtime, dashboard live. | Lebih cocok kalau memang butuh realtime. | Pakai kalau butuh |
+| spatie/laravel-permission | `composer require spatie/laravel-permission` | Role dan permission. | Admin panel, multi-role user, akses per fitur. | Package matang dan umum dipakai. | Sangat disarankan |
+| spatie/laravel-medialibrary | `composer require spatie/laravel-medialibrary` | Manajemen upload file/media. | Produk yang punya gambar, dokumen, avatar, galeri. | Lebih rapi daripada membuat relasi file sendiri dari nol. | Aman dipakai |
+| spatie/laravel-backup | `composer require spatie/laravel-backup` | Backup file dan database. | Aplikasi yang butuh backup otomatis. | Tetap simpan backup di lokasi berbeda, bukan hanya di server yang sama. | Aman dipakai |
+| spatie/laravel-activitylog | `composer require spatie/laravel-activitylog` | Mencatat aktivitas user/model. | Audit perubahan data. | Bagus untuk admin panel dan sistem internal. | Aman dipakai |
+| maatwebsite/excel | `composer require maatwebsite/excel` | Import/export Excel. | Laporan, upload data massal, template Excel. | Untuk file besar, perhatikan memory dan queue. | Aman dipakai |
 
-| Nama | Package | Line versi | Install | Use case |
-| --- | --- | --- | --- | --- |
-| Eloquent ORM | illuminate/database | 13.x | `composer require illuminate/database` | ORM Laravel standalone. |
-| Doctrine ORM | doctrine/orm | 3.x | `composer require doctrine/orm` | ORM enterprise untuk domain kompleks. |
-| Doctrine DBAL | doctrine/dbal | 4.x | `composer require doctrine/dbal` | Lapisan abstraksi database. |
-| Cycle ORM | cycle/orm | 2.x | `composer require cycle/orm` | ORM modern berbasis schema. |
-| Propel | propel/propel | 2.x | `composer require propel/propel` | ORM alternatif. |
-| Phinx | robmorgan/phinx | 0.16+ | `composer require robmorgan/phinx` | Migrasi database. |
-| Predis | predis/predis | 3.x | `composer require predis/predis` | Client Redis berbasis PHP. |
-| ext-redis | phpredis | 6.x | PECL | Extension Redis performa tinggi. |
-| Elasticsearch PHP | elasticsearch/elasticsearch | 8.x | `composer require elasticsearch/elasticsearch` | Client resmi Elasticsearch. |
-| Elastica | ruflin/elastica | 8.x | `composer require ruflin/elastica` | Lapisan abstraksi Elasticsearch. |
-| Meilisearch PHP | meilisearch/meilisearch-php | 1.x | `composer require meilisearch/meilisearch-php` | Client search engine modern. |
-| TNTSearch | teamtnt/tntsearch | 2.x | `composer require teamtnt/tntsearch` | Full-text search di PHP. |
-| league/csv | league/csv | 9.x | `composer require league/csv` | Pembaca/penulis CSV. |
-| moneyphp/money | moneyphp/money | 4.x | `composer require moneyphp/money` | Value object untuk uang. |
-| ramsey/uuid | ramsey/uuid | 4.x | `composer require ramsey/uuid` | Generator UUID. |
-| symfony/uid | symfony/uid | 7.4 / 8.x | `composer require symfony/uid` | Utilitas UUID/ULID. |
 
-## Testing, quality assurance, analisis statis, dan refactor
 
-| Nama | Package | Line versi | Install | Use case |
-| --- | --- | --- | --- | --- |
-| PHPUnit | phpunit/phpunit | 12.x / 13.x | `composer require --dev phpunit/phpunit` | Framework unit testing standar. |
-| Pest | pestphp/pest | 4.x | `composer require --dev pestphp/pest` | Lapisan testing modern dan ekspresif. |
-| Codeception | codeception/codeception | 5.x | `composer require --dev codeception/codeception` | Acceptance dan functional testing. |
-| Behat | behat/behat | 3.x | `composer require --dev behat/behat` | BDD testing. |
-| Mockery | mockery/mockery | 1.x | `composer require --dev mockery/mockery` | Mock object. |
-| PHPStan | phpstan/phpstan | 2.x | `composer require --dev phpstan/phpstan` | Tool utama analisis statis. |
-| Psalm | vimeo/psalm | 6.x | `composer require --dev vimeo/psalm` | Tool analisis statis alternatif. |
-| Phan | phan/phan | 5.x | `composer require --dev phan/phan` | Static analyzer. |
-| Rector | rector/rector | 2.x | `composer require --dev rector/rector` | Refactor dan upgrade otomatis. |
-| PHP-CS-Fixer | friendsofphp/php-cs-fixer | 3.x | `composer require --dev friendsofphp/php-cs-fixer` | Perapih gaya kode. |
-| PHP_CodeSniffer | squizlabs/php_codesniffer | 3.x / 4.x | `composer require --dev squizlabs/php_codesniffer` | Pemeriksa gaya kode. |
-| Laravel Pint | laravel/pint | 1.x | `composer require --dev laravel/pint` | Formatter khusus Laravel. |
-| Infection | infection/infection | 0.29+ | `composer require --dev infection/infection` | Mutation testing. |
-| Deptrac | qossmic/deptrac | 2.x | `composer require --dev qossmic/deptrac` | Pemeriksa dependency arsitektur. |
-| GrumPHP | phpro/grumphp | 2.x | `composer require --dev phpro/grumphp` | Quality gate pre-commit. |
-| PhpMetrics | phpmetrics/phpmetrics | 3.x | `composer require --dev phpmetrics/phpmetrics` | Metrik kode. |
+## Komponen penting untuk Symfony
 
-## File, storage, gambar, PDF, spreadsheet, dan media
+Symfony kuat karena komponennya bisa dipakai satu per satu. Ini yang paling sering berguna.
 
-| Nama | Package | Line versi | Install | Use case |
-| --- | --- | --- | --- | --- |
-| Flysystem | league/flysystem | 3.x | `composer require league/flysystem` | Abstraksi filesystem. |
-| Intervention Image | intervention/image | 3.x | `composer require intervention/image` | Manipulasi gambar. |
-| Imagine | imagine/imagine | 1.x | `composer require imagine/imagine` | Library manipulasi gambar alternatif. |
-| Dompdf | dompdf/dompdf | 3.x | `composer require dompdf/dompdf` | Konversi HTML ke PDF. |
-| mPDF | mpdf/mpdf | 8.x | `composer require mpdf/mpdf` | Pembuatan PDF UTF-8 dari HTML. |
-| TCPDF | tecnickcom/tcpdf | 6.x | `composer require tecnickcom/tcpdf` | Pembuatan PDF dan barcode klasik. |
-| Browsershot | spatie/browsershot | 4.x | `composer require spatie/browsershot` | Screenshot/PDF melalui browser engine. |
-| PhpSpreadsheet | phpoffice/phpspreadsheet | 2.x / 3.x / 4.x | `composer require phpoffice/phpspreadsheet` | Library spreadsheet modern; pengganti PHPExcel. |
-| PHPWord | phpoffice/phpword | 1.x | `composer require phpoffice/phpword` | Membuat dan membaca dokumen Word. |
-| Laravel Excel | maatwebsite/excel | 3.x | `composer require maatwebsite/excel` | Import/export Excel untuk Laravel. |
-| Spatie Media Library | spatie/laravel-medialibrary | 11.x | `composer require spatie/laravel-medialibrary` | Manajemen media untuk Laravel. |
-| PHP-FFMpeg | php-ffmpeg/php-ffmpeg | 1.x | `composer require php-ffmpeg/php-ffmpeg` | Wrapper pemrosesan video/audio. |
-| Endroid QR Code | endroid/qr-code | 5.x | `composer require endroid/qr-code` | Pembuatan QR code. |
+| Dependency | Install | Gunanya | Pakai kalau | Catatan | Status |
+| --- | --- | --- | --- | --- | --- |
+| symfony/http-client | `composer require symfony/http-client` | HTTP client. | Memanggil API dari service lain. | Alternatif bagus selain Guzzle. | Sangat disarankan |
+| symfony/mailer | `composer require symfony/mailer` | Mengirim email. | Email transactional, notifikasi, reset password. | Pengganti modern untuk SwiftMailer. | Sangat disarankan |
+| symfony/validator | `composer require symfony/validator` | Validasi data. | Form, DTO, request API. | Bagus untuk validasi yang rapi dan reusable. | Sangat disarankan |
+| symfony/serializer | `composer require symfony/serializer` | Ubah object ke array/JSON dan sebaliknya. | API, DTO, import/export data. | Butuh disiplin agar struktur data tetap jelas. | Aman dipakai |
+| symfony/security-bundle | `composer require symfony/security-bundle` | Authentication dan authorization. | Aplikasi Symfony yang butuh login dan akses role. | Komponen kuat, tapi perlu dipahami konfigurasinya. | Sangat disarankan |
+| symfony/messenger | `composer require symfony/messenger` | Queue/message bus. | Job async, event, integrasi worker. | Bagus untuk aplikasi yang mulai kompleks. | Aman dipakai |
+| symfony/twig-bundle | `composer require symfony/twig-bundle` | Template view. | Aplikasi server-rendered. | Twig aman, matang, dan enak untuk template. | Aman dipakai |
+| api-platform/core | `composer require api` | Membuat API cepat dengan REST/GraphQL. | API data yang mengikuti resource/model. | Kuat, tapi pelajari konsepnya dulu agar tidak terasa ajaib. | Pakai kalau butuh |
+| easycorp/easyadmin-bundle | `composer require easycorp/easyadmin-bundle` | Admin panel Symfony. | Butuh CRUD admin cepat. | Bagus untuk backoffice internal. | Aman dipakai |
 
-## Mail, notifikasi, queue, async, dan realtime
 
-| Nama | Package | Line versi | Install | Use case |
-| --- | --- | --- | --- | --- |
-| Symfony Mailer | symfony/mailer | 7.4 / 8.x | `composer require symfony/mailer` | Mailer modern. |
-| PHPMailer | phpmailer/phpmailer | 6.x | `composer require phpmailer/phpmailer` | Library email klasik dan stabil. |
-| Laravel Notifications | laravel/framework | 13.x | Built-in | Notifikasi multi-channel. |
-| Pusher PHP Server | pusher/pusher-php-server | 7.x | `composer require pusher/pusher-php-server` | Broadcast realtime. |
-| Ratchet | cboden/ratchet | 0.4.x | `composer require cboden/ratchet` | Server WebSocket klasik. |
-| ReactPHP | react/event-loop | 1.x | `composer require react/event-loop` | Event loop untuk PHP async. |
-| AMPHP | amphp/amp | 3.x | `composer require amphp/amp` | Framework PHP async modern. |
-| OpenSwoole/Swoole | openswoole/core / ext-swoole | 22.x / 5.x+ | PECL + Composer | Runtime server concurrency tinggi. |
-| Workerman | workerman/workerman | 5.x | `composer require workerman/workerman` | Server async sederhana. |
-| RoadRunner | spiral/roadrunner | 2025.x | Binary + Composer | Application server PHP. |
-| Laravel Octane | laravel/octane | 2.x | `composer require laravel/octane` | Server Laravel performa tinggi. |
-| php-amqplib | php-amqplib/php-amqplib | 3.x | `composer require php-amqplib/php-amqplib` | Client RabbitMQ/AMQP. |
-| Pheanstalk | pda/pheanstalk | 7.x / 8.x | `composer require pda/pheanstalk` | Client queue Beanstalkd. |
 
-## Keamanan dan audit dependency
+## Database, cache, search, dan ID
 
-| Nama | Package | Line versi | Install | Use case |
-| --- | --- | --- | --- | --- |
-| composer audit | Composer built-in | 2.x | `composer audit` | Audit kerentanan dependency. |
-| Roave Security Advisories | roave/security-advisories | dev-latest | `composer require --dev roave/security-advisories:dev-latest` | Memblokir package rentan saat install/update. |
-| Symfony Security Bundle | symfony/security-bundle | 7.4 / 8.x | `composer require symfony/security-bundle` | Security stack Symfony. |
-| spatie/laravel-permission | spatie/laravel-permission | 6.x | `composer require spatie/laravel-permission` | Role dan permission untuk Laravel. |
-| Bouncer | silber/bouncer | 1.x | `composer require silber/bouncer` | Role dan ability untuk Eloquent. |
-| Defuse Encryption | defuse/php-encryption | 2.x | `composer require defuse/php-encryption` | Enkripsi tingkat aplikasi. |
-| phpseclib | phpseclib/phpseclib | 3.x | `composer require phpseclib/phpseclib` | Utilitas SSH/SFTP/crypto pure PHP. |
-| HTML Purifier | ezyang/htmlpurifier | 4.x | `composer require ezyang/htmlpurifier` | Sanitasi HTML. |
-| Google Authenticator | phpgangsta/googleauthenticator | Legacy/perlu ditinjau | `composer require phpgangsta/googleauthenticator` | Helper 2FA; tinjau alternatif modern sebelum produksi. |
-| iniscan | psecio/iniscan | 0.x/1.x | `composer require --dev psecio/iniscan` | Scan keamanan php.ini. |
+Bagian ini membantu mengatur data. Pilih yang sesuai ukuran data dan kebutuhan query.
 
-## Data, data palsu, scraping aman, parser, dan utilitas
+| Dependency | Install | Gunanya | Pakai kalau | Catatan | Status |
+| --- | --- | --- | --- | --- | --- |
+| illuminate/database | `composer require illuminate/database` | Eloquent ORM standalone. | Ingin Eloquent tanpa full Laravel. | Enak untuk proyek kecil-menengah yang sudah nyaman dengan Eloquent. | Aman dipakai |
+| doctrine/orm | `composer require doctrine/orm` | ORM enterprise. | Domain kompleks, entity, repository, relasi besar. | Lebih formal dan butuh disiplin mapping. | Sangat disarankan |
+| doctrine/dbal | `composer require doctrine/dbal` | Database abstraction layer. | Butuh operasi schema, query database, migrasi kompleks. | Sering dipakai framework dan migration tool. | Sangat disarankan |
+| robmorgan/phinx | `composer require robmorgan/phinx` | Migration tool. | Proyek non-framework yang butuh migration database. | Sederhana dan praktis. | Aman dipakai |
+| predis/predis | `composer require predis/predis` | Client Redis berbasis PHP. | Cache, queue, rate limit, session. | Mudah dipasang; untuk performa tinggi bisa pakai ext-redis. | Aman dipakai |
+| ext-redis | PECL / package OS | Extension Redis native. | Traffic tinggi atau operasi Redis intensif. | Lebih cepat, tapi butuh instal extension di server. | Sangat disarankan |
+| elasticsearch/elasticsearch | `composer require elasticsearch/elasticsearch` | Client Elasticsearch. | Search besar, log search, data analytics. | Jangan pakai kalau pencarian masih bisa dengan database biasa. | Pakai kalau butuh |
+| meilisearch/meilisearch-php | `composer require meilisearch/meilisearch-php` | Client Meilisearch. | Search cepat untuk produk web. | Lebih mudah dipakai daripada Elasticsearch untuk banyak kasus. | Aman dipakai |
+| ramsey/uuid | `composer require ramsey/uuid` | Membuat UUID. | Butuh ID unik yang tidak mudah ditebak. | Masih sangat umum dipakai. | Aman dipakai |
+| symfony/uid | `composer require symfony/uid` | UUID dan ULID. | Butuh ID modern, terutama ULID yang lebih enak diurutkan. | Pilihan bagus kalau memakai komponen Symfony. | Aman dipakai |
+| moneyphp/money | `composer require moneyphp/money` | Representasi uang yang aman. | Aplikasi pembayaran, invoice, akuntansi. | Hindari menyimpan uang sebagai float. | Sangat disarankan |
 
-| Nama | Package | Line versi | Install | Use case |
-| --- | --- | --- | --- | --- |
-| FakerPHP | fakerphp/faker | 1.x | `composer require --dev fakerphp/faker` | Data palsu untuk testing; pengganti fzaninotto/faker. |
-| Symfony DomCrawler | symfony/dom-crawler | 7.4 / 8.x | `composer require symfony/dom-crawler` | Crawler HTML/XML. |
-| Symfony BrowserKit | symfony/browser-kit | 7.4 / 8.x | `composer require symfony/browser-kit` | Simulasi browser. |
-| Symfony Panther | symfony/panther | 2.x | `composer require --dev symfony/panther` | Testing/scraping browser melalui Chrome. |
-| PHP-Parser | nikic/php-parser | 5.x | `composer require nikic/php-parser` | Parser AST PHP. |
-| league/commonmark | league/commonmark | 2.x | `composer require league/commonmark` | Parser Markdown modern. |
-| Parsedown | erusev/parsedown | 1.x | `composer require erusev/parsedown` | Parser Markdown ringan; tinjau keamanan dan maintenance. |
-| Geocoder PHP | geocoder-php/geocoder | 4.x | `composer require geocoder-php/geocoder` | Abstraksi geocoding. |
-| Mobile Detect | mobiledetect/mobiledetectlib | 4.x | `composer require mobiledetect/mobiledetectlib` | Deteksi perangkat; tetap prioritaskan responsive design. |
-| libphonenumber-for-php | giggsey/libphonenumber-for-php | 8.x | `composer require giggsey/libphonenumber-for-php` | Validasi nomor telepon. |
-| SimplePie | simplepie/simplepie | 1.x | `composer require simplepie/simplepie` | Parser RSS/Atom. |
 
-## AI, machine learning, dan agent tooling
 
-| Nama | Package | Line versi | Install | Use case |
-| --- | --- | --- | --- | --- |
-| Laravel AI SDK | Ekosistem Laravel AI | 13.x | Ekosistem Laravel | Pola AI primitives, agent, embedding, audio, image, dan vector search. |
-| OpenAI PHP Client | openai-php/client | 0.x / 1.x | `composer require openai-php/client` | Integrasi OpenAI API; simpan API key di environment variable. |
-| LLPhant | theodo-group/llphant | 0.x/1.x | `composer require theodo-group/llphant` | Framework aplikasi LLM dan RAG untuk PHP. |
-| PHP-ML | php-ai/php-ml | 0.x | `composer require php-ai/php-ml` | Machine learning klasik di PHP. |
-| Rubix ML | rubix/ml | 2.x | `composer require rubix/ml` | Toolkit machine learning klasik yang lebih lengkap. |
-| Math PHP | markrogoyski/math-php | 2.x | `composer require markrogoyski/math-php` | Utilitas matematika dan statistik. |
+## HTTP, API, autentikasi, dan integrasi
 
-## DevOps, deployment, observability, debugging, dan profiling
+Gunakan dependency di bagian ini saat aplikasi perlu bicara dengan layanan lain.
 
-| Nama | Package/Tool | Line versi | Install | Use case |
-| --- | --- | --- | --- | --- |
-| Deployer | deployer/deployer | 7.x / 8.x | `composer require --dev deployer/deployer` | Otomasi deployment PHP. |
-| Symfony CLI | Binary | Terbaru | Installer resmi | Local development dan tooling Symfony. |
-| Docker Compose | Binary | v2 | Docker Desktop atau package manager | Stack lokal app/database/cache. |
-| FrankenPHP | Binary/Docker | 1.x+ | Docker image | Application server PHP modern berbasis Caddy. |
-| RoadRunner | Binary | 2025.x | Binary + config | Worker PHP performa tinggi. |
-| Sentry PHP | sentry/sentry | 4.x | `composer require sentry/sentry` | Error monitoring. |
-| OpenTelemetry PHP | open-telemetry/api | 1.x | `composer require open-telemetry/api` | Tracing dan observability. |
-| Monolog | monolog/monolog | 3.x | `composer require monolog/monolog` | Logging standar. |
-| PsySH | psy/psysh | 0.12+ | `composer require --dev psy/psysh` | REPL PHP modern. |
-| Kint | kint-php/kint | 6.x | `composer require --dev kint-php/kint` | Output debug. |
-| Clockwork | itsgoingd/clockwork | 5.x | `composer require itsgoingd/clockwork` | Profiling/debugging saat development. |
-| DebugBar | maximebf/debugbar | 1.x | `composer require --dev maximebf/debugbar` | Toolbar debug. |
+| Dependency | Install | Gunanya | Pakai kalau | Catatan | Status |
+| --- | --- | --- | --- | --- | --- |
+| guzzlehttp/guzzle | `composer require guzzlehttp/guzzle` | HTTP client. | Memanggil REST API pihak ketiga. | Paling umum dan banyak contoh. | Sangat disarankan |
+| nyholm/psr7 | `composer require nyholm/psr7` | Implementasi PSR-7. | Butuh request/response object yang ringan. | Sering dipakai bersama tool HTTP modern. | Aman dipakai |
+| league/oauth2-server | `composer require league/oauth2-server` | Server OAuth2. | Membangun OAuth2 sendiri di luar Laravel Passport. | Jangan pakai kalau token sederhana sudah cukup. | Pakai kalau butuh |
+| lcobucci/jwt | `composer require lcobucci/jwt` | JWT yang strict. | Butuh token JWT dengan aturan jelas. | Lebih aman untuk sistem serius daripada library asal-asalan. | Aman dipakai |
+| firebase/php-jwt | `composer require firebase/php-jwt` | JWT sederhana. | Kebutuhan JWT ringan. | Pastikan algorithm dan key tidak salah konfigurasi. | Aman dipakai |
+| zircote/swagger-php | `composer require zircote/swagger-php` | Generate OpenAPI. | Dokumentasi API dari attribute/annotation. | Bagus agar API tidak hanya hidup di kepala developer. | Aman dipakai |
+| webonyx/graphql-php | `composer require webonyx/graphql-php` | GraphQL server. | Butuh GraphQL di PHP. | Tidak perlu jika REST sudah cukup. | Pakai kalau butuh |
+| stripe/stripe-php | `composer require stripe/stripe-php` | Integrasi Stripe. | Pembayaran kartu/subscription via Stripe. | Gunakan webhook dan idempotency dengan benar. | Sangat disarankan |
+| twilio/sdk | `composer require twilio/sdk` | Integrasi Twilio. | SMS, voice, WhatsApp via Twilio. | Cek biaya dan aturan negara tujuan. | Aman dipakai |
+| aws/aws-sdk-php | `composer require aws/aws-sdk-php` | Integrasi AWS. | S3, SES, SQS, Lambda, dan layanan AWS lain. | Gunakan IAM permission sekecil mungkin. | Sangat disarankan |
+| google/apiclient | `composer require google/apiclient` | Integrasi Google API. | Drive, Sheets, Calendar, OAuth Google. | Setup OAuth dan scope harus rapi. | Aman dipakai |
 
-## Package legacy dan pengganti modern
 
-| Package legacy | Status | Pengganti modern |
-| --- | --- | --- |
-| fzaninotto/Faker | Abandoned / legacy | fakerphp/faker |
-| PHPOffice/PHPExcel | Deprecated | phpoffice/phpspreadsheet |
-| swiftmailer/swiftmailer | Deprecated | symfony/mailer atau phpmailer/phpmailer |
-| silexphp/Silex | End-of-life | Symfony, Slim, Laravel, atau Mezzio |
-| bcit-ci/CodeIgniter | Legacy CodeIgniter 3 | codeigniter4/appstarter |
-| piwik/piwik | Nama proyek lama | Matomo |
-| phacility/phabricator | Tidak cocok untuk proyek baru | GitHub, GitLab, Gitea, atau Forgejo |
-| facebookarchive/facebook-php-sdk | Archived | OAuth client modern atau SDK resmi terbaru |
-| kriswallsmith/assetic | Legacy asset pipeline | Vite, Symfony AssetMapper, atau Laravel Vite |
-| FriendsOfPHP/Goutte | Legacy scraping stack | Symfony BrowserKit, DomCrawler, atau Panther |
-| tymondesigns/jwt-auth | Perlu ditinjau | Laravel Sanctum, Passport, atau lcobucci/jwt |
-| amazonwebservices/aws-sdk-for-php | Deprecated v1 | aws/aws-sdk-php v3 |
-| PayPal-PHP-SDK | Legacy | PayPal checkout/server SDK terbaru atau SDK payment gateway modern |
-| password_compat | Tidak perlu untuk PHP modern | password_hash/password_verify bawaan PHP |
-| php7cc | Tool upgrade legacy | Rector + PHPStan |
 
-## Template `composer.json` modern
+## Testing dan kualitas kode
+
+Bagian ini penting untuk menjaga proyek tetap sehat. Kalau proyek akan dipakai lama, jangan dilewati.
+
+| Dependency | Install | Gunanya | Pakai kalau | Catatan | Status |
+| --- | --- | --- | --- | --- | --- |
+| phpunit/phpunit | `composer require --dev phpunit/phpunit` | Unit testing. | Semua proyek yang serius. | Mulai dari test kecil untuk logic penting. | Sangat disarankan |
+| pestphp/pest | `composer require --dev pestphp/pest` | Testing dengan syntax ringkas. | Tim ingin test yang mudah dibaca. | Berjalan di atas PHPUnit, bukan pengganti total. | Sangat disarankan |
+| codeception/codeception | `composer require --dev codeception/codeception` | Functional dan acceptance testing. | Butuh test alur aplikasi lebih lengkap. | Lebih berat dari unit test biasa. | Pakai kalau butuh |
+| behat/behat | `composer require --dev behat/behat` | BDD testing. | Tim ingin test berbentuk skenario bisnis. | Bagus kalau product owner ikut membaca skenario. | Pakai kalau butuh |
+| mockery/mockery | `composer require --dev mockery/mockery` | Mock object. | Test class yang punya dependency. | Jangan terlalu banyak mock sampai test tidak realistis. | Aman dipakai |
+| phpstan/phpstan | `composer require --dev phpstan/phpstan` | Analisis statis. | Cari bug tanpa menjalankan aplikasi. | Naikkan level pelan-pelan agar tim tidak kaget. | Sangat disarankan |
+| vimeo/psalm | `composer require --dev vimeo/psalm` | Analisis statis alternatif. | Butuh type checking yang kuat. | Pilih PHPStan atau Psalm dulu; tidak harus dua-duanya. | Aman dipakai |
+| rector/rector | `composer require --dev rector/rector` | Refactor otomatis. | Upgrade PHP/framework, rapikan syntax lama. | Selalu review diff sebelum merge. | Sangat disarankan |
+| friendsofphp/php-cs-fixer | `composer require --dev friendsofphp/php-cs-fixer` | Perapih style kode. | Proyek umum di luar Laravel. | Buat config agar semua orang sama. | Sangat disarankan |
+| squizlabs/php_codesniffer | `composer require --dev squizlabs/php_codesniffer` | Pemeriksa standar kode. | Butuh PSR-12, WordPress standard, atau aturan custom. | Bagus untuk tim yang perlu aturan formal. | Aman dipakai |
+| infection/infection | `composer require --dev infection/infection` | Mutation testing. | Menguji apakah test benar-benar kuat. | Untuk proyek matang, bukan tahap awal. | Pakai kalau butuh |
+| qossmic/deptrac | `composer require --dev qossmic/deptrac` | Cek batas arsitektur. | Aplikasi besar yang ingin layer tetap bersih. | Sangat membantu mencegah service layer bocor ke mana-mana. | Pakai kalau butuh |
+| phpro/grumphp | `composer require --dev phpro/grumphp` | Pre-commit quality gate. | Ingin test/style berjalan sebelum commit. | Jangan terlalu berat agar developer tidak mematikan hook. | Aman dipakai |
+
+
+
+## File, gambar, PDF, Excel, dan media
+
+Package ini membantu saat aplikasi berurusan dengan file upload, laporan, dokumen, atau media.
+
+| Dependency | Install | Gunanya | Pakai kalau | Catatan | Status |
+| --- | --- | --- | --- | --- | --- |
+| league/flysystem | `composer require league/flysystem` | Abstraksi file storage. | Local disk, S3, FTP, storage berbeda. | Bagus agar kode tidak terkunci ke satu jenis storage. | Sangat disarankan |
+| intervention/image | `composer require intervention/image` | Mengolah gambar. | Resize, crop, convert, thumbnail. | Perhatikan memory untuk gambar besar. | Aman dipakai |
+| imagine/imagine | `composer require imagine/imagine` | Manipulasi gambar alternatif. | Butuh library image yang framework-agnostic. | Pilih salah satu dengan Intervention sesuai selera. | Aman dipakai |
+| dompdf/dompdf | `composer require dompdf/dompdf` | HTML ke PDF. | Invoice, laporan sederhana. | Untuk layout kompleks, hasil bisa perlu banyak penyesuaian. | Aman dipakai |
+| mpdf/mpdf | `composer require mpdf/mpdf` | PDF dari HTML dengan dukungan UTF-8 kuat. | Dokumen PDF yang butuh karakter internasional. | Cukup berat, tapi kuat untuk dokumen. | Aman dipakai |
+| tecnickcom/tcpdf | `composer require tecnickcom/tcpdf` | PDF dan barcode klasik. | Sistem lama atau kebutuhan PDF low-level. | API terasa tua, tapi masih banyak dipakai. | Untuk proyek lama |
+| spatie/browsershot | `composer require spatie/browsershot` | Screenshot/PDF memakai browser. | Butuh hasil render seperti Chrome. | Butuh Node/Chrome di server. | Pakai kalau butuh |
+| phpoffice/phpspreadsheet | `composer require phpoffice/phpspreadsheet` | Baca/tulis spreadsheet. | Excel, CSV, laporan data. | Pengganti modern untuk PHPExcel. | Sangat disarankan |
+| phpoffice/phpword | `composer require phpoffice/phpword` | Baca/tulis dokumen Word. | Generate surat, laporan, template dokumen. | Cocok untuk dokumen sederhana sampai menengah. | Aman dipakai |
+| php-ffmpeg/php-ffmpeg | `composer require php-ffmpeg/php-ffmpeg` | Wrapper FFmpeg. | Proses video/audio. | Tetap butuh binary FFmpeg di server. | Pakai kalau butuh |
+| endroid/qr-code | `composer require endroid/qr-code` | Membuat QR code. | Tiket, pembayaran, verifikasi, link cepat. | Sederhana dan praktis. | Aman dipakai |
+
+
+
+## CMS, e-commerce, dan platform siap pakai
+
+Tidak semua proyek harus dibangun dari nol. Kalau kebutuhan cocok, platform siap pakai bisa lebih cepat.
+
+| Platform | Install | Gunanya | Pakai kalau | Catatan | Status |
+| --- | --- | --- | --- | --- | --- |
+| WordPress | Download / hosting installer | CMS paling populer. | Blog, company profile, landing page, portal konten. | Jangan terlalu banyak plugin tanpa audit. | Sangat disarankan |
+| WooCommerce | Plugin WordPress | Toko online di WordPress. | UMKM, katalog produk, checkout standar. | Untuk commerce besar, siapkan optimasi serius. | Aman dipakai |
+| Drupal | Composer project | CMS enterprise. | Konten terstruktur, workflow editorial, portal besar. | Belajar awalnya lebih berat. | Sangat disarankan |
+| Joomla | Download / Composer tertentu | CMS serbaguna. | Situs konten yang butuh CMS matang. | Pastikan extension yang dipakai masih aktif. | Aman dipakai |
+| Grav | Download / Composer | CMS flat-file. | Website ringan tanpa database. | Bagus untuk dokumentasi kecil dan situs cepat. | Aman dipakai |
+| Statamic | `composer require statamic/cms` | CMS berbasis Laravel. | Konten modern dengan developer experience bagus. | Lisensi dan kebutuhan proyek perlu dicek. | Aman dipakai |
+| October CMS | Composer | CMS berbasis Laravel. | Website custom yang ingin CMS developer-friendly. | Cek versi dan lisensi sebelum proyek. | Aman dipakai |
+| Magento / Adobe Commerce | Composer | E-commerce enterprise. | Katalog besar, multi-store, kebutuhan commerce kompleks. | Berat. Jangan pakai untuk toko kecil sederhana. | Pakai kalau butuh |
+| Sylius | Composer | Composable commerce. | E-commerce custom/headless. | Butuh tim yang nyaman dengan Symfony. | Pakai kalau butuh |
+| PrestaShop | Download / Composer tertentu | E-commerce open-source. | Toko online mandiri. | Cek modul dan tema yang dipakai. | Aman dipakai |
+| Shopware | Composer / installer | Commerce modern. | Commerce yang butuh fleksibilitas dan ekosistem Symfony. | Lebih cocok untuk tim yang siap belajar platformnya. | Pakai kalau butuh |
+| Matomo | Download / self-hosted | Analytics self-hosted. | Ingin data analytics tidak bergantung penuh pada Google Analytics. | Perlu storage dan maintenance sendiri. | Aman dipakai |
+| Nextcloud | Download / self-hosted | Cloud file collaboration. | File sharing internal, kalender, kontak. | Butuh server yang dirawat dengan benar. | Aman dipakai |
+| BookStack | Installer / Git | Dokumentasi internal. | Wiki tim, dokumentasi proyek, SOP. | Lebih sederhana daripada MediaWiki. | Aman dipakai |
+
+
+
+## Email, queue, async, dan realtime
+
+Pakai bagian ini saat aplikasi mulai butuh proses di belakang layar atau fitur realtime.
+
+| Dependency | Install | Gunanya | Pakai kalau | Catatan | Status |
+| --- | --- | --- | --- | --- | --- |
+| symfony/mailer | `composer require symfony/mailer` | Kirim email. | Email transactional. | Pilihan modern dan rapi. | Sangat disarankan |
+| phpmailer/phpmailer | `composer require phpmailer/phpmailer` | Kirim email SMTP. | Proyek sederhana atau legacy. | Masih stabil dan mudah dipahami. | Aman dipakai |
+| pusher/pusher-php-server | `composer require pusher/pusher-php-server` | Broadcast realtime via Pusher. | Notifikasi live, dashboard realtime. | Cek biaya dan batas penggunaan. | Pakai kalau butuh |
+| cboden/ratchet | `composer require cboden/ratchet` | WebSocket server klasik. | Eksperimen realtime dengan PHP. | Untuk produksi modern, pertimbangkan Reverb/Swoole/Node tergantung stack. | Untuk proyek lama |
+| react/event-loop | `composer require react/event-loop` | Event loop async. | Membangun proses async di PHP. | Butuh pemahaman async yang baik. | Pakai kalau butuh |
+| amphp/amp | `composer require amphp/amp` | Async PHP modern. | I/O async, crawler, client, worker. | Tidak wajib untuk web CRUD biasa. | Pakai kalau butuh |
+| workerman/workerman | `composer require workerman/workerman` | Server async. | WebSocket, TCP server, worker realtime. | Pastikan model proses dipahami. | Pakai kalau butuh |
+| spiral/roadrunner | Binary + package | Application server PHP. | Worker performa tinggi. | Perlu cara berpikir long-running. | Pakai kalau butuh |
+| php-amqplib/php-amqplib | `composer require php-amqplib/php-amqplib` | Client RabbitMQ. | Queue, event, integrasi sistem. | Bagus untuk arsitektur message broker. | Aman dipakai |
+
+
+
+## Keamanan
+
+Keamanan jangan ditambahkan belakangan. Minimal audit dependency dan validasi input harus ada sejak awal.
+
+| Dependency | Install | Gunanya | Pakai kalau | Catatan | Status |
+| --- | --- | --- | --- | --- | --- |
+| composer audit | `composer audit` | Audit vulnerability dependency. | Sebelum deploy dan di CI. | Ini bawaan Composer, jadi tidak ada alasan untuk tidak menjalankan. | Sangat disarankan |
+| roave/security-advisories | `composer require --dev roave/security-advisories:dev-latest` | Mencegah install package rentan. | Proyek yang ingin lebih ketat soal dependency. | Kadang membuat update gagal karena memang ada advisory. | Sangat disarankan |
+| symfony/security-bundle | `composer require symfony/security-bundle` | Security stack Symfony. | Login, role, access control. | Kuat, tapi perlu konfigurasi yang benar. | Sangat disarankan |
+| defuse/php-encryption | `composer require defuse/php-encryption` | Enkripsi data aplikasi. | Menyimpan data sensitif yang perlu dienkripsi. | Jangan membuat algoritma enkripsi sendiri. | Aman dipakai |
+| phpseclib/phpseclib | `composer require phpseclib/phpseclib` | SSH, SFTP, crypto pure PHP. | Integrasi SFTP/SSH tanpa extension khusus. | Bagus untuk otomasi file dan integrasi server. | Aman dipakai |
+| ezyang/htmlpurifier | `composer require ezyang/htmlpurifier` | Membersihkan HTML. | User boleh input HTML terbatas. | Penting untuk mencegah XSS. | Sangat disarankan |
+| psecio/iniscan | `composer require --dev psecio/iniscan` | Scan konfigurasi php.ini. | Audit server PHP. | Cocok untuk checklist hardening. | Pakai kalau butuh |
+
+
+
+## Utility umum
+
+Utility kecil ini sering membantu, tapi tetap pilih secukupnya.
+
+| Dependency | Install | Gunanya | Pakai kalau | Catatan | Status |
+| --- | --- | --- | --- | --- | --- |
+| nesbot/carbon | `composer require nesbot/carbon` | Tanggal dan waktu. | Manipulasi tanggal yang nyaman. | Banyak dipakai di Laravel. | Sangat disarankan |
+| fakerphp/faker | `composer require --dev fakerphp/faker` | Data palsu untuk testing. | Factory, seeder, dummy data. | Pengganti modern untuk fzaninotto/Faker. | Sangat disarankan |
+| respect/validation | `composer require respect/validation` | Validasi data fluent. | Proyek kecil tanpa framework besar. | Kalau sudah di Laravel/Symfony, pakai validator bawaan dulu. | Aman dipakai |
+| league/commonmark | `composer require league/commonmark` | Parser Markdown modern. | Blog, dokumentasi, komentar markdown. | Lebih disarankan daripada parser lama yang kurang aktif. | Sangat disarankan |
+| erusev/parsedown | `composer require erusev/parsedown` | Parser Markdown ringan. | Proyek lama yang sudah memakainya. | Untuk proyek baru, pertimbangkan league/commonmark. | Untuk proyek lama |
+| nikic/php-parser | `composer require nikic/php-parser` | Parser kode PHP menjadi AST. | Static analysis, refactor tool, code generator. | Package penting di ekosistem tooling PHP. | Sangat disarankan |
+| league/csv | `composer require league/csv` | Baca/tulis CSV. | Import/export data CSV. | Lebih aman daripada parsing CSV manual. | Sangat disarankan |
+| giggsey/libphonenumber-for-php | `composer require giggsey/libphonenumber-for-php` | Validasi nomor telepon. | Form nomor HP internasional. | Jangan validasi nomor telepon hanya dengan regex sederhana. | Aman dipakai |
+| mobiledetect/mobiledetectlib | `composer require mobiledetect/mobiledetectlib` | Deteksi perangkat. | Butuh fallback berdasarkan user-agent. | Jangan jadikan pengganti responsive design. | Pakai kalau butuh |
+
+
+
+## AI dan machine learning
+
+PHP bisa dipakai untuk integrasi AI. Untuk training ML berat, biasanya Python tetap lebih cocok.
+
+| Dependency | Install | Gunanya | Pakai kalau | Catatan | Status |
+| --- | --- | --- | --- | --- | --- |
+| openai-php/client | `composer require openai-php/client` | Client OpenAI API. | Fitur chat, embedding, summarization, agent sederhana. | Simpan API key di `.env`, jangan commit ke repo. | Pakai kalau butuh |
+| theodo-group/llphant | `composer require theodo-group/llphant` | Framework LLM/RAG di PHP. | Eksperimen search dokumen, chatbot, embedding. | Area AI cepat berubah, cek update sebelum produksi. | Pakai kalau butuh |
+| php-ai/php-ml | `composer require php-ai/php-ml` | Machine learning klasik. | Belajar ML, klasifikasi sederhana, eksperimen data kecil. | Bukan pengganti stack Python untuk ML berat. | Pakai kalau butuh |
+| rubix/ml | `composer require rubix/ml` | Toolkit ML lebih lengkap. | Eksperimen ML klasik di PHP. | Tetap evaluasi performa dan kebutuhan data. | Pakai kalau butuh |
+| markrogoyski/math-php | `composer require markrogoyski/math-php` | Matematika dan statistik. | Perhitungan statistik, numerik, analisis ringan. | Bagus untuk utility, bukan framework ML penuh. | Aman dipakai |
+
+
+
+## DevOps, observability, dan debugging
+
+Bagian ini membantu proyek lebih mudah dipantau, di-debug, dan di-deploy.
+
+| Dependency | Install | Gunanya | Pakai kalau | Catatan | Status |
+| --- | --- | --- | --- | --- | --- |
+| deployer/deployer | `composer require --dev deployer/deployer` | Otomasi deployment. | Deploy ke VPS/server sendiri. | Bagus untuk tim kecil yang belum pakai platform deployment besar. | Aman dipakai |
+| sentry/sentry | `composer require sentry/sentry` | Error monitoring. | Produksi yang perlu tahu error cepat. | Jangan hanya mengandalkan log server. | Sangat disarankan |
+| open-telemetry/api | `composer require open-telemetry/api` | Tracing dan observability. | Microservice atau sistem yang sudah kompleks. | Tidak wajib untuk aplikasi kecil. | Pakai kalau butuh |
+| psy/psysh | `composer require --dev psy/psysh` | REPL PHP. | Debug dan eksperimen kode. | Nyaman untuk development. | Aman dipakai |
+| kint-php/kint | `composer require --dev kint-php/kint` | Debug output yang enak dibaca. | Development lokal. | Jangan tampilkan dump debug di produksi. | Aman dipakai |
+| itsgoingd/clockwork | `composer require itsgoingd/clockwork` | Profiling/debug web app. | Melihat query, request, timeline. | Bagus untuk menemukan bottleneck. | Aman dipakai |
+
+
+## Package lama dan penggantinya
+
+Ini bagian penting karena README lama berisi banyak package yang dulu populer, tetapi sekarang kurang cocok untuk proyek baru.
+
+| Package lama | Masalah | Pengganti | Catatan sederhana |
+| --- | --- | --- | --- |
+| fzaninotto/Faker | Sudah tidak jadi pilihan utama. | fakerphp/faker | Untuk proyek baru langsung pakai FakerPHP. |
+| PHPOffice/PHPExcel | Deprecated. | phpoffice/phpspreadsheet | PHPExcel jangan dipakai untuk proyek baru. |
+| swiftmailer/swiftmailer | Deprecated. | symfony/mailer atau phpmailer/phpmailer | SwiftMailer sudah digantikan Symfony Mailer. |
+| silexphp/Silex | End-of-life. | Symfony, Slim, Laravel, Mezzio | Silex cocoknya hanya untuk membaca proyek lama. |
+| bcit-ci/CodeIgniter | CodeIgniter 3 legacy. | codeigniter4/appstarter | Gunakan CodeIgniter 4 untuk proyek baru. |
+| piwik/piwik | Nama lama. | Matomo | Piwik sekarang dikenal sebagai Matomo. |
+| facebookarchive/facebook-php-sdk | Archived. | OAuth client modern atau SDK resmi terbaru | Jangan mulai integrasi baru dari SDK archived. |
+| kriswallsmith/assetic | Asset pipeline lama. | Vite, Laravel Vite, Symfony AssetMapper | Frontend modern lebih nyaman dengan Vite. |
+| FriendsOfPHP/Goutte | Scraping stack lama. | Symfony BrowserKit, DomCrawler, Panther | Bisa muncul di proyek lama, tapi bukan pilihan awal. |
+| password_compat | Tidak perlu untuk PHP modern. | password_hash/password_verify bawaan PHP | PHP modern sudah punya API password sendiri. |
+| php7cc | Tool upgrade lama. | Rector + PHPStan | Untuk upgrade modern, Rector lebih relevan. |
+
+## Template `composer.json` yang rapi
 
 ```json
 {
@@ -360,47 +404,45 @@ Gunakan PSR-4, semantic versioning, testing, analisis statis, dan CI sejak awal.
 }
 ```
 
-## Checklist memilih package
+## Checklist sebelum menambah dependency
 
-1. Cek status maintenance di GitHub dan Packagist.
-2. Prioritaskan package yang mendukung PHP 8.4/8.5 untuk proyek baru.
-3. Hindari dependency yang archived, abandoned, atau tidak lagi mendapat patch keamanan.
-4. Jalankan `composer audit` sebelum deployment.
-5. Gunakan constraint versi yang jelas seperti `^13.0`, `^8.0`, `^7.4`, atau `^3.0`.
-6. Tambahkan testing, analisis statis, formatting, dan audit dependency ke CI.
-7. Jangan simpan secret di repository; gunakan `.env`, CI secrets, atau secrets manager.
-8. Untuk produk jangka panjang, prioritaskan line LTS atau proyek dengan kebijakan support jelas.
-9. Untuk API publik, siapkan rate limiting, validasi, autentikasi, logging, monitoring, dan dokumentasi OpenAPI.
-10. Untuk package AI/LLM, pisahkan provider layer agar model dan vendor mudah diganti.
+1. Cek apakah package masih aktif di GitHub atau Packagist.
+2. Cek apakah package mendukung PHP yang dipakai proyek.
+3. Baca README package, terutama bagian install dan konfigurasi.
+4. Cek issue terbuka. Kalau terlalu banyak issue penting yang tidak dijawab, hati-hati.
+5. Jalankan `composer audit`.
+6. Jangan pakai package hanya karena viral.
+7. Jangan install dependency besar untuk masalah kecil.
+8. Kalau framework sudah menyediakan fitur bawaan, pakai fitur bawaan dulu.
+9. Simpan secret di `.env` atau secret manager, bukan di repository.
+10. Catat alasan kenapa dependency itu dipakai.
 
-## Urutan belajar dan build yang direkomendasikan
+## Urutan belajar yang masuk akal
 
-1. PHP 8.4/8.5, Composer, PSR-4, PSR-12, error handling, typed properties, dan attributes.
-2. Laravel 13 untuk aplikasi full-stack, API, queue, dan produktivitas.
-3. Symfony 7.4 LTS/8.x untuk komponen enterprise dan arsitektur modular.
-4. PHPUnit/Pest, PHPStan, Rector, PHP-CS-Fixer/Pint.
-5. Keamanan: composer audit, autentikasi, authorization, validasi, enkripsi, dan rate limiting.
-6. Database: migration, ORM, transaction, indexing, caching, dan queue.
-7. Deployment: Docker, PHP-FPM/FrankenPHP/RoadRunner, scheduler, worker, dan log.
-8. Observability: Monolog, Sentry, OpenTelemetry.
-9. Integrasi AI: embedding, vector search, job LLM berbasis queue, dan provider abstraction.
+1. PHP modern: type, class, namespace, error handling, Composer.
+2. Dasar web: routing, request, response, session, cookie.
+3. Database: query, migration, transaction, indexing.
+4. Laravel atau Symfony, pilih salah satu dulu.
+5. Testing dengan PHPUnit atau Pest.
+6. PHPStan untuk menemukan bug lebih awal.
+7. Rector untuk upgrade kode.
+8. Security dasar: validasi input, CSRF, XSS, password hashing, rate limit.
+9. Deployment: Docker, PHP-FPM/FrankenPHP, queue worker, scheduler.
+10. Observability: log, error monitoring, tracing.
 
-## Sumber utama versi
+## Sumber utama untuk cek versi
 
 | Sumber | URL |
 | --- | --- |
-| Versi PHP yang didukung | https://www.php.net/supported-versions.php |
-| Catatan rilis Laravel | https://laravel.com/docs/releases |
-| Rilis Symfony | https://symfony.com/releases |
-| Unduhan Composer | https://getcomposer.org/download/ |
+| PHP supported versions | https://www.php.net/supported-versions.php |
+| Laravel release notes | https://laravel.com/docs/13.x/releases |
+| Symfony releases | https://symfony.com/releases |
+| Composer download | https://getcomposer.org/download/ |
 | Packagist | https://packagist.org/ |
-| Rilis WordPress | https://wordpress.org/download/releases/ |
-| Rilis Drupal core | https://www.drupal.org/project/drupal/releases |
-| Unduhan Joomla | https://downloads.joomla.org/latest |
 
-## Lampiran A — Backlog referensi legacy dari README awal
+## Lampiran: daftar referensi dari README lama
 
-Lampiran ini mempertahankan referensi dari daftar awal agar tidak hilang. Tidak semua item di bawah direkomendasikan untuk proyek baru. Gunakan kategori kurasi di atas terlebih dahulu, lalu tinjau setiap item legacy sebelum mengadopsinya.
+Daftar lama tetap dipertahankan sebagai referensi, tetapi tidak semuanya direkomendasikan. Anggap bagian ini sebagai backlog untuk dikurasi lagi nanti, bukan daftar install.
 
 - [laravel/laravel](https://github.com/laravel/laravel)
 - [symfony/symfony](https://github.com/symfony/symfony)
@@ -1892,15 +1934,15 @@ Lampiran ini mempertahankan referensi dari daftar awal agar tidak hilang. Tidak 
 - [arshaw/phpti](https://github.com/arshaw/phpti)
 - [silverstripe/silverstripe-framework](https://github.com/silverstripe/silverstripe-framework)
 
-## Lampiran B — Khusus pembelajaran keamanan
+## Lampiran khusus pembelajaran keamanan
 
-Entri berikut hanya cocok untuk lab lokal, edukasi keamanan, atau latihan sejenis CTF. Jangan deploy ke server publik.
+Item berikut hanya cocok untuk lab lokal atau latihan keamanan. Jangan deploy ke server publik.
 
 - ethicalhack3r/DVWA
 
-## Lampiran C — Dikeluarkan dari rekomendasi
+## Entri yang tidak direkomendasikan
 
-Sebagian entri awal mengarah ke backdoor, webshell, private API, atau materi berisiko tinggi. Agar README ini tetap aman dan berorientasi produksi, entri tersebut tidak diberi link dan tidak direkomendasikan.
+Beberapa entri dari daftar lama mengarah ke backdoor, webshell, private API, atau materi berisiko. Untuk menjaga README tetap aman, item tersebut tidak diberi link aktif di bagian rekomendasi.
 
 - mgp25/Instagram-API — tidak direkomendasikan untuk proyek aplikasi.
 - owner888/phpspider — tidak direkomendasikan untuk proyek aplikasi.
@@ -1909,9 +1951,19 @@ Sebagian entri awal mengarah ke backdoor, webshell, private API, atau materi ber
 - nbs-system/php-malware-finder — tidak direkomendasikan untuk proyek aplikasi.
 - mgp25/SC-API — tidak direkomendasikan untuk proyek aplikasi.
 
-## Catatan maintenance
+## Catatan perawatan README
 
-- Tinjau README ini minimal setiap tiga bulan.
-- Cek ulang major release untuk PHP, Laravel, Symfony, WordPress, Drupal, Joomla, PHPUnit, Pest, PHPStan, Rector, dan Composer.
-- Saat menambahkan item baru, gunakan format: `Nama | Package | Line versi | Install | Use case | Status`.
-- Jika package menjadi abandoned, archived, atau berisiko keamanan, pindahkan ke bagian legacy/migrasi.
+README ini sebaiknya dicek ulang minimal setiap tiga bulan.
+
+Yang perlu dicek:
+- versi PHP yang masih didukung;
+- versi Laravel dan Symfony terbaru;
+- package yang mulai abandoned;
+- package yang terkena security advisory;
+- dependency yang sudah digantikan oleh fitur bawaan framework.
+
+Kalau ingin menambah package baru, gunakan pola sederhana ini:
+
+```md
+| Dependency | Install | Gunanya | Pakai kalau | Catatan | Status |
+```
